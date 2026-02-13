@@ -1,0 +1,5 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^data-raw$
+^instruction\.md$
+^adtte_.*\.xlsx$

@@ -1,0 +1,68 @@
+---
+title: "predictTTE Workflow"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{predictTTE Workflow}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+## Overview
+
+`predictTTE` simulates future event trajectories from interim ADTTE records.
+The package supports event-date predictions for target event counts and
+event-count predictions for target dates.
+
+## Inputs
+
+Core columns expected in `data`:
+
+- `usubjid`
+- `trialsdt`
+- `randdt`
+- `adt`
+- `cutoffdt`
+- `status` (`1` event, `0` censored, `-1` dropout)
+- `aval` (time from randomization to `adt` in days)
+
+## Example
+
+```{r eval=FALSE}
+library(predictTTE)
+
+adtte <- example_adtte_pfs
+
+res <- predict_tte(
+  data = adtte,
+  planned_total_n = 176,
+  target_events = c(120, 140, 160),
+  target_dates = as.Date(c("2026-02-01", "2026-05-01", "2026-08-01")),
+  nsim = 1000,
+  assessment_intervals_days = c(42, 84),
+  assessment_cut_days = c(365.25),
+  enrollment_model = "exponential",
+  event_model = "exponential",
+  dropout_model = "exponential",
+  ci_level = 0.95,
+  fixed_parameters = TRUE,
+  seed = 1
+)
+
+res$pred_dates
+res$pred_event_counts
+res$plot
+res$pred_event_plot
+```
+
+## Notes
+
+- Tumor assessment windows are handled by rolling latent event dates forward
+  to the first post-event scheduled assessment.
+- If `assessment_intervals_days = NULL` and `assessment_cut_days = NULL`,
+  no tumor-assessment adjustment is applied.
+- Current implementation supports `exponential`, `weibull`, `log-normal`,
+  and `log-logistic` for model fitting/simulation.

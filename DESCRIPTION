@@ -1,0 +1,36 @@
+Package: predictTTE
+Type: Package
+Title: Predict Time-To-Event Milestones from Interim ADTTE Data
+Version: 1.0.0
+Authors@R: c(
+    person(
+      given = "Yuquan",
+      family = "Wang",
+      role = c("aut", "cre"),
+      email = "richanwang@proton.me"
+    )
+  )
+Description: Simulates enrollment, event, and dropout trajectories from
+    interim ADTTE data to predict milestone event dates and event counts
+    at user-specified dates, including confidence intervals and an
+    interactive cumulative event plot.
+License: MIT + file LICENSE
+Encoding: UTF-8
+RoxygenNote: 7.3.2
+Depends: 
+    R (>= 4.1.0)
+Imports:
+    MASS,
+    plotly,
+    survival,
+    tibble
+Suggests:
+    devtools,
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0),
+    usethis,
+    withr
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+LazyData: true
