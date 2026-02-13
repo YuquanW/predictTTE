@@ -16,8 +16,10 @@
 ## Install
 
 ```r
-# from local source
-# devtools::install("/path/to/predictTTE")
+if (!requireNamespace("devtools", quietly = TRUE)) {
+    install.packages("devtools")
+}
+devtools::install_github("Yuquan/predictTTE")
 ```
 
 ## Minimal usage
