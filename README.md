@@ -32,11 +32,11 @@ adtte <- example_adtte_pfs
 
 res <- predict_tte(
   data = adtte,
-  planned_total_n = 176,
-  target_events = c(120, 140, 160),
+  planned_total_n = 300,
+  target_events = c(200, 250),
   target_dates = as.Date(c("2026-02-01", "2026-05-01", "2026-08-01")),
   nsim = 1000,
-  assessment_intervals_days = c(42, 84),
+  assessment_intervals_days = c(40, 80),
   assessment_cut_days = c(365.25),
   enrollment_model = "exponential",
   event_model = "exponential",
