@@ -19,7 +19,7 @@
 if (!requireNamespace("devtools", quietly = TRUE)) {
     install.packages("devtools")
 }
-devtools::install_github("Yuquan/predictTTE")
+devtools::install_github("YuquanW/predictTTE")
 ```
 
 ## Minimal usage
