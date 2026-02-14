@@ -121,7 +121,7 @@ predict_tte <- function(data,
   }
 
   max_target_date <- if (has_target_dates) max(target_dates) else as.Date(NA)
-  plot_end_date <- if (has_target_dates) max(max_target_date, cutoff_date + 365) else (cutoff_date + 365)
+  plot_end_date <- if (has_target_dates) max(max_target_date + 365, cutoff_date + 365) else (cutoff_date + 365)
   plot_grid <- seq(trialsdt, plot_end_date, by = "7 days")
   plot_grid_num <- as.numeric(plot_grid)
   plot_mat <- matrix(NA_real_, nrow = nsim, ncol = length(plot_grid))
