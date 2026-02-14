@@ -41,6 +41,7 @@ test_that("predict_tte returns the required outputs", {
   )
 
   expect_true(is.list(res))
+  expect_true(inherits(res, "PredRes"))
   expect_true(all(c("pred_dates", "pred_event_counts", "plot", "pred_event_plot", "meta") %in% names(res)))
   expect_equal(nrow(res$pred_dates), 2)
   expect_equal(nrow(res$pred_event_counts), 2)
@@ -82,6 +83,48 @@ test_that("log-normal model is accepted", {
   )
 
   expect_true(inherits(fit$event_fit, "survreg"))
+})
+
+test_that("print/showDefault on PredRes only show formatted prediction summaries", {
+  skip_if_not_installed("survival")
+  skip_if_not_installed("plotly")
+  skip_if_not_installed("tibble")
+
+  n <- 20
+  trialsdt <- as.Date("2024-01-01")
+  randdt <- trialsdt + sample(0:30, n, replace = TRUE)
+  aval <- sample(30:120, n, replace = TRUE)
+  status <- sample(c(-1L, 0L, 1L), n, replace = TRUE)
+  status[1] <- 0L
+  status[2] <- 1L
+  status[3] <- -1L
+  adt <- randdt + aval
+
+  data <- data.frame(
+    usubjid = sprintf("ID%03d", seq_len(n)),
+    trialsdt = trialsdt,
+    randdt = randdt,
+    adt = adt,
+    cutoffdt = as.Date("2025-01-01"),
+    status = status,
+    aval = aval,
+    stringsAsFactors = FALSE
+  )
+
+  res <- predict_tte(
+    data = data,
+    planned_total_n = n,
+    target_events = c(5L),
+    target_dates = as.Date(c("2025-03-01")),
+    nsim = 10,
+    seed = 1,
+    show_progress = FALSE
+  )
+
+  expect_output(print(res), "Predicted dates for targeted event numbers")
+  expect_output(showDefault(res), "Predicted event counts for targeted dates")
+  expect_s3_class(res, "PredRes")
+  expect_s3_class(plot(res), "PredRes")
 })
 
 test_that("predict_tte allows target_dates = NULL", {

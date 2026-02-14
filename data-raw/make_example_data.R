@@ -9,6 +9,7 @@ example_adtte <- readr::read_csv(
 )
 
 example_adtte <- as.data.frame(example_adtte)
+example_adtte <- example_adtte[seq_len(min(300L, nrow(example_adtte))), , drop = FALSE]
 example_adtte$trialsdt <- as.Date(example_adtte$trialsdt)
 example_adtte$randdt <- as.Date(example_adtte$randdt)
 example_adtte$adt <- as.Date(example_adtte$adt)

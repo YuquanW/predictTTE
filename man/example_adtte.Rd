@@ -3,7 +3,7 @@
 \alias{example_adtte}
 \title{Example Interim ADTTE Data}
 \format{
-A data frame with 339 rows and 7 columns:
+A data frame with 300 rows and 7 columns:
 \describe{
   \item{usubjid}{Unique subject identifier.}
   \item{trialsdt}{Trial first-patient randomization date.}

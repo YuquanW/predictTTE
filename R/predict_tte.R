@@ -21,6 +21,8 @@
 #' @param fixed_parameters Use fitted point estimates (`TRUE`) or sample coefficients
 #'   from asymptotic distribution (`FALSE`).
 #' @param seed Optional seed for reproducible simulation.
+#' @param show_progress Logical; if `TRUE`, show a simulation progress bar.
+#' @param show_plot Logical; if `TRUE`, display the prediction plot after simulation.
 #' @return A list with prediction tables and interactive plots.
 #' @export
 predict_tte <- function(data,
@@ -36,7 +38,9 @@ predict_tte <- function(data,
                         ci_level = 0.95,
                         covariates = NULL,
                         fixed_parameters = TRUE,
-                        seed = NULL) {
+                        seed = NULL,
+                        show_progress = TRUE,
+                        show_plot = FALSE) {
   if (!requireNamespace("tibble", quietly = TRUE)) {
     stop("Package 'tibble' is required for predict_tte().", call. = FALSE)
   }
@@ -128,6 +132,12 @@ predict_tte <- function(data,
   ongoing_rand_num <- as.numeric(as_date_safe(ongoing$randdt))
   ongoing_t0 <- ongoing$aval
 
+  pb <- NULL
+  if (isTRUE(show_progress)) {
+    pb <- utils::txtProgressBar(min = 0, max = nsim, initial = 0, style = 3)
+    on.exit(close(pb), add = TRUE)
+  }
+
   for (s in seq_len(nsim)) {
     sim_events <- observed_events_at_cutoff
 
@@ -215,6 +225,10 @@ predict_tte <- function(data,
       event_count_mat[s, ] <- vapply(target_date_num, function(x) sum(sim_events <= x), numeric(1))
     }
     plot_mat[s, ] <- vapply(plot_grid_num, function(x) sum(sim_events <= x), numeric(1))
+
+    if (!is.null(pb)) {
+      utils::setTxtProgressBar(pb, s)
+    }
   }
 
   date_summary <- if (has_target_events) t(apply(event_date_mat, 2, summarize_ci, ci_level = ci_level)) else NULL
@@ -356,6 +370,11 @@ predict_tte <- function(data,
       planned_total_n = planned_total_n
     )
   )
-  class(out) <- c("predictTTE_result", class(out))
+  class(out) <- c("PredRes", class(out))
+
+  if (isTRUE(show_plot)) {
+    plot(out)
+  }
+
   out
 }

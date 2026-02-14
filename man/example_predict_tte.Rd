@@ -8,7 +8,7 @@ example_predict_tte(nsim = 200)
   \item{nsim}{Number of simulations.}
 }
 \value{
-A \code{predictTTE_result} object.
+A \code{PredRes} object.
 }
 \description{
 Runs a minimal workflow using packaged example data.

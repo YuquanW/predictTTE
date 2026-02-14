@@ -1,5 +1,9 @@
 # Generated manually; run devtools::document() to refresh.
 
+S3method(plot,PredRes)
+S3method(print,PredRes)
+S3method(showDefault,PredRes)
 export(example_predict_tte)
 export(fit_tte_models)
 export(predict_tte)
+export(showDefault)

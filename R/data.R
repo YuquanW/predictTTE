@@ -3,7 +3,7 @@
 #' A synthetic ADTTE-style example dataset for package
 #' demos/tests. Subject IDs are recoded and dates/durations are perturbed.
 #'
-#' @format A data frame with 339 rows and 7 columns:
+#' @format A data frame with 300 rows and 7 columns:
 #' \describe{
 #'   \item{usubjid}{Unique subject identifier.}
 #'   \item{trialsdt}{Trial first-patient randomization date.}

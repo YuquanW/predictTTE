@@ -3,7 +3,7 @@
 #' Demonstrates how to use packaged ADTTE input with `predict_tte()`.
 #'
 #' @param nsim Number of simulations.
-#' @return A `predictTTE_result` object.
+#' @return A `PredRes` object.
 #' @export
 example_predict_tte <- function(nsim = 200) {
   if (!exists("example_adtte", inherits = TRUE)) {
@@ -13,8 +13,8 @@ example_predict_tte <- function(nsim = 200) {
 
   predict_tte(
     data = data,
-    planned_total_n = 176,
-    target_events = c(120, 140, 160),
+    planned_total_n = 300,
+    target_events = c(140, 160),
     target_dates = as.Date(c("2026-02-01", "2026-05-01", "2026-08-01")),
     nsim = nsim,
     assessment_intervals_days = c(42, 84),
