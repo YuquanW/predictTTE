@@ -6,10 +6,10 @@
 #' @return A `predictTTE_result` object.
 #' @export
 example_predict_tte <- function(nsim = 200) {
-  if (!exists("example_adtte_pfs", inherits = TRUE)) {
-    data("example_adtte_pfs", package = "predictTTE", envir = environment())
+  if (!exists("example_adtte", inherits = TRUE)) {
+    data("example_adtte", package = "predictTTE", envir = environment())
   }
-  data <- get("example_adtte_pfs", envir = environment())
+  data <- get("example_adtte", envir = environment())
 
   predict_tte(
     data = data,

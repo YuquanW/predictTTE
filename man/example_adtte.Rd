@@ -1,9 +1,9 @@
-\name{example_adtte_pfs}
+\name{example_adtte}
 \docType{data}
-\alias{example_adtte_pfs}
-\title{Example Interim ADTTE Data (PFS)}
+\alias{example_adtte}
+\title{Example Interim ADTTE Data}
 \format{
-A data frame with 339 rows and 8 columns:
+A data frame with 339 rows and 7 columns:
 \describe{
   \item{usubjid}{Unique subject identifier.}
   \item{trialsdt}{Trial first-patient randomization date.}
@@ -12,7 +12,6 @@ A data frame with 339 rows and 8 columns:
   \item{cutoffdt}{Data cutoff date.}
   \item{status}{Event status: 1 event, 0 censored, -1 dropout.}
   \item{aval}{Time from randomization to adt in days.}
-  \item{endpoint}{Endpoint label.}
 }
 }
 \source{
