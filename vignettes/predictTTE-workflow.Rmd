@@ -34,7 +34,7 @@ Core columns expected in `data`:
 ```{r eval=FALSE}
 library(predictTTE)
 
-adtte <- example_adtte_pfs
+adtte <- example_adtte
 
 res <- predict_tte(
   data = adtte,
