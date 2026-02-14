@@ -18,7 +18,18 @@
 if (!requireNamespace("devtools", quietly = TRUE)) {
     install.packages("devtools")
 }
-devtools::install_github("YuquanW/predictTTE")
+devtools::install_github(
+  "YuquanW/predictTTE",
+  build_vignettes = TRUE,
+  dependencies = TRUE
+)
+```
+
+If the package was already installed without vignettes, reinstall it with
+`build_vignettes = TRUE`, then run:
+
+```r
+vignette(package = "predictTTE")
 ```
 
 ## Example
