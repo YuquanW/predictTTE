@@ -12,7 +12,7 @@
   - an interactive cumulative event plot with prediction-start and cutoff markers;
   - a CI-ribbon plot for target-date event count predictions.
 
-## Install
+## Installation
 
 ```r
 if (!requireNamespace("devtools", quietly = TRUE)) {
