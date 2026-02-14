@@ -21,16 +21,16 @@ if (!requireNamespace("devtools", quietly = TRUE)) {
 devtools::install_github("YuquanW/predictTTE")
 ```
 
-## Minimal usage
+## Example
 
 ```r
 library(predictTTE)
 
 # Use packaged auto-loaded example data (.rda)
-adtte <- example_adtte_pfs
+data <- example_adtte
 
 res <- predict_tte(
-  data = adtte,
+  data = data,
   planned_total_n = 300,
   target_events = c(200, 250),
   target_dates = as.Date(c("2026-02-01", "2026-05-01", "2026-08-01")),
