@@ -4,7 +4,6 @@
 
 ## What it does
 
-- Cleans EDC workbook data into a standard ADTTE structure.
 - Fits parametric enrollment, event, and dropout models.
 - Simulates future event trajectories with tumor assessment windows.
 - Returns:
