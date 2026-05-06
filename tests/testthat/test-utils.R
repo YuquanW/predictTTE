@@ -31,3 +31,24 @@ test_that("assessment windows can be disabled with NULL inputs", {
 
   expect_equal(out, latent)
 })
+
+test_that("simulate_parametric_tte avoids NA draws for extreme exponential lp", {
+  skip_if_not_installed("survival")
+
+  set.seed(1)
+  df <- data.frame(
+    time = stats::rexp(200, rate = 0.02),
+    status = rep(1L, 200),
+    x = stats::rnorm(200)
+  )
+  fit <- survival::survreg(survival::Surv(time, status) ~ x, data = df, dist = "exponential")
+
+  draws <- expect_warning(
+    predictTTE:::simulate_parametric_tte(fit, data.frame(x = c(1e8, -1e8, 0))),
+    NA
+  )
+
+  expect_false(anyNA(draws))
+  expect_true(all(is.finite(draws)))
+  expect_true(all(draws > 0))
+})

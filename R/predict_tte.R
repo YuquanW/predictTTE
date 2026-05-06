@@ -164,9 +164,9 @@ predict_tte <- function(data,
         assessment_cut_days = windows$cuts
       )
       observed_now <- adjusted_event <= latent_dropout
-
-      if (any(observed_now)) {
-        sim_events <- c(sim_events, adjusted_event[observed_now])
+      idx_now <- which(!is.na(observed_now) & observed_now)
+      if (length(idx_now) > 0L) {
+        sim_events <- c(sim_events, adjusted_event[idx_now])
       }
     }
 
@@ -206,9 +206,9 @@ predict_tte <- function(data,
         assessment_cut_days = windows$cuts
       )
       observed_new <- adjusted_event_new <= latent_dropout_new
-
-      if (any(observed_new)) {
-        sim_events <- c(sim_events, adjusted_event_new[observed_new])
+      idx_new <- which(!is.na(observed_new) & observed_new)
+      if (length(idx_new) > 0L) {
+        sim_events <- c(sim_events, adjusted_event_new[idx_new])
       }
     }
 

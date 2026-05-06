@@ -202,29 +202,56 @@ simulate_parametric_tte <- function(fit, newdata, fixed_parameters = TRUE) {
   }
 
   mm <- stats::model.matrix(stats::delete.response(stats::terms(fit)), newdata)
-  coefs <- stats::coef(fit)
+  coefs_raw <- stats::coef(fit)
+  coef_names <- names(coefs_raw)
+  na_coef <- is.na(coefs_raw)
+  coefs <- coefs_raw
+  coefs[na_coef] <- 0
 
   if (!fixed_parameters) {
-    vc <- fit$var[seq_along(coefs), seq_along(coefs), drop = FALSE]
+    vc <- fit$var[seq_along(coefs_raw), seq_along(coefs_raw), drop = FALSE]
+    if (any(na_coef)) {
+      vc[na_coef, ] <- 0
+      vc[, na_coef] <- 0
+      diag(vc)[na_coef] <- 0
+    }
     if (!requireNamespace("MASS", quietly = TRUE)) {
       stop("MASS is required when fixed_parameters = FALSE.", call. = FALSE)
     }
     coefs <- as.numeric(MASS::mvrnorm(1L, mu = coefs, Sigma = vc))
+    names(coefs) <- coef_names
   }
 
-  lp <- as.numeric(mm %*% coefs)
+  mm_aligned <- matrix(
+    0,
+    nrow = nrow(mm),
+    ncol = length(coefs),
+    dimnames = list(NULL, names(coefs))
+  )
+  common_cols <- intersect(colnames(mm), names(coefs))
+  if (length(common_cols) > 0L) {
+    mm_aligned[, common_cols] <- mm[, common_cols, drop = FALSE]
+  }
+  mm_aligned[!is.finite(mm_aligned)] <- 0
+
+  lp <- as.numeric(mm_aligned %*% coefs)
+  lp[!is.finite(lp)] <- 0
   dist <- fit$dist
   scale <- fit$scale
+  if (!is.finite(scale) || scale <= 0) {
+    scale <- sqrt(.Machine$double.eps)
+  }
+  lp_exp <- pmax(pmin(lp, 700), -700)
   n <- nrow(mm)
 
   if (dist == "exponential") {
-    rate <- exp(-lp)
+    rate <- exp(-lp_exp)
     return(stats::rexp(n, rate = rate))
   }
 
   if (dist == "weibull") {
     shape <- 1 / scale
-    return(stats::rweibull(n, shape = shape, scale = exp(lp)))
+    return(stats::rweibull(n, shape = shape, scale = exp(lp_exp)))
   }
 
   if (dist == "lognormal") {
@@ -234,7 +261,7 @@ simulate_parametric_tte <- function(fit, newdata, fixed_parameters = TRUE) {
   if (dist == "loglogistic") {
     shape <- 1 / scale
     u <- stats::runif(n)
-    return(exp(lp) * (u / (1 - u))^(1 / shape))
+    return(exp(lp_exp) * (u / (1 - u))^(1 / shape))
   }
 
   stop("Unsupported fitted distribution in simulate_parametric_tte: ", dist, call. = FALSE)
@@ -243,9 +270,12 @@ simulate_parametric_tte <- function(fit, newdata, fixed_parameters = TRUE) {
 simulate_conditional_tte <- function(fit, newdata, t0, fixed_parameters = TRUE) {
   t_draw <- simulate_parametric_tte(fit, newdata, fixed_parameters = fixed_parameters)
 
-  # Rejection sampling is simple and robust for conditional draws T | T > t0.
-  while (any(t_draw <= t0, na.rm = TRUE)) {
-    idx <- which(t_draw <= t0)
+  # Rejection sampling for conditional draws T | T > t0 with NA-safe redraw.
+  while (TRUE) {
+    idx <- which(!is.finite(t_draw) | t_draw <= t0)
+    if (length(idx) == 0L) {
+      break
+    }
     t_draw[idx] <- simulate_parametric_tte(fit, newdata[idx, , drop = FALSE], fixed_parameters = fixed_parameters)
   }
 
