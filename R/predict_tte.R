@@ -16,6 +16,7 @@
 #' @param enrollment_model Distribution for enrollment model.
 #' @param event_model Distribution for event model.
 #' @param dropout_model Distribution for dropout model.
+#' @param fuyears Simulated follow-up years.
 #' @param ci_level Confidence interval level.
 #' @param covariates Optional covariates in event/dropout models.
 #' @param fixed_parameters Use fitted point estimates (`TRUE`) or sample coefficients
