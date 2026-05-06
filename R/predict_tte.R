@@ -27,7 +27,7 @@
 #' @export
 predict_tte <- function(data,
                         planned_total_n,
-                        target_events,
+                        target_events = NULL,
                         target_dates = NULL,
                         nsim = 1000,
                         assessment_intervals_days = NULL,
@@ -272,38 +272,34 @@ predict_tte <- function(data,
   )
   actual_df <- actual_df[actual_df$date <= pred_start, , drop = FALSE]
 
+  x_min <- min(plot_df$date, na.rm = TRUE)
+  x_max <- max(plot_df$date, na.rm = TRUE)
   y_max <- max(c(plot_df$ucl, actual_df$actual), na.rm = TRUE)
 
-  pred_dates <- if (has_target_events) {
-    pred_dates_tbl$pred_date
-    } else {
-      NULL
-    }
   pred_date_shapes <- if (has_target_events) {
-    lapply(pred_dates, function(d) {
+    lapply(target_events, function(e) {
       list(
         type = "line", xref = "x", yref = "y",
-        x0 = d, x1 = d,
-        y0 = 0, y1 = y_max,
-        line = list(color = "#2ca02c", dash = "dot")
+        x0 = x_min, x1 = x_max,
+        y0 = e, y1 = e,
+        line = list(color = "#ff7f0e", dash = "dot")
       )
     })} else {
       NULL
     }
   pred_date_annotations <- if (has_target_events) {
-    lapply(seq_along(pred_dates), function(i) {
+    lapply(seq_along(target_events), function(i) {
       list(
-        x = pred_dates[i], y = y_max, xref = "x", yref = "y",
-        text = paste0("IA Prediction ", i),
+        x = x_max, y = target_events[i], xref = "x", yref = "y",
+        text = paste0("Target events: ", target_events[i]),
         showarrow = FALSE,
-        xanchor = "left",
-        yanchor = "bottom",
-        font = list(color = "#2ca02c")
+        xanchor = "right",
+        yanchor = "top",
+        font = list(color = "#ff7f0e")
       )
     })} else {
       NULL
     }
-
   plt <- plotly::plot_ly(plot_df, x = ~date) |>
     plotly::add_ribbons(
       ymin = ~lcl,
@@ -317,7 +313,7 @@ predict_tte <- function(data,
       title = "Predicted Event Trajectory",
       xaxis = list(title = "Date"),
       yaxis = list(title = "Number of Events"),
-      shapes = list(
+      shapes = c(list(
         list(
           type = "line", xref = "x", yref = "y",
           x0 = pred_start, x1 = pred_start,
@@ -329,16 +325,11 @@ predict_tte <- function(data,
           x0 = cutoff_date, x1 = cutoff_date,
           y0 = 0, y1 = y_max,
           line = list(color = "#9467bd", dash = "dot")
-        ),
-        list(
-          type = "line", xref = "x", yref = "y",
-          x0 = cutoff_date, x1 = cutoff_date,
-          y0 = 0, y1 = y_max,
-          line = list(color = "#9467bd", dash = "dot")
-        ),
-        pred_date_shapes
+        )
       ),
-      annotations = list(
+      pred_date_shapes
+      ),
+      annotations = c(list(
         list(
           x = pred_start, y = y_max, xref = "x", yref = "y",
           text = "Prediction start", showarrow = FALSE,
@@ -348,8 +339,9 @@ predict_tte <- function(data,
           x = cutoff_date, y = y_max, xref = "x", yref = "y",
           text = "Cutoff date", showarrow = FALSE,
           xanchor = "left", yanchor = "bottom", font = list(color = "#9467bd")
-        ),
-        pred_date_annotations
+        )
+      ),
+      pred_date_annotations
       )
     )
 
