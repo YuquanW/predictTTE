@@ -272,6 +272,7 @@ predict_tte <- function(data,
   )
   actual_df <- actual_df[actual_df$date <= pred_start, , drop = FALSE]
 
+  pred_dates <- pred_dates_tbl$pred_date
   x_min <- min(plot_df$date, na.rm = TRUE)
   x_max <- max(plot_df$date, na.rm = TRUE)
   y_max <- max(c(plot_df$ucl, actual_df$actual), na.rm = TRUE)
@@ -291,7 +292,9 @@ predict_tte <- function(data,
     lapply(seq_along(target_events), function(i) {
       list(
         x = x_max, y = target_events[i], xref = "x", yref = "y",
-        text = paste0("Target events: ", target_events[i]),
+        text = sprintf("Target number of events: %s\nPredicted date: %s",
+                       as.character(target_events[i]),
+                       as.character(pred_dates[i])),
         showarrow = FALSE,
         xanchor = "right",
         yanchor = "top",
