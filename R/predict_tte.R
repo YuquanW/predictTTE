@@ -298,7 +298,7 @@ predict_tte <- function(data,
         showarrow = FALSE,
         xanchor = "right",
         yanchor = "top",
-        font = list(color = "#ff7f0e")
+        font = list(color = "#ff7f0e", size = 18)
       )
     })} else {
       NULL
@@ -336,12 +336,12 @@ predict_tte <- function(data,
         list(
           x = pred_start, y = y_max, xref = "x", yref = "y",
           text = "Prediction start", showarrow = FALSE,
-          xanchor = "left", yanchor = "bottom", font = list(color = "#d62728")
+          xanchor = "left", yanchor = "bottom", font = list(color = "#d62728", size = 18)
         ),
         list(
           x = cutoff_date, y = y_max, xref = "x", yref = "y",
           text = "Cutoff date", showarrow = FALSE,
-          xanchor = "left", yanchor = "bottom", font = list(color = "#9467bd")
+          xanchor = "left", yanchor = "bottom", font = list(color = "#9467bd", size = 18)
         )
       ),
       pred_date_annotations
