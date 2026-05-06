@@ -274,6 +274,36 @@ predict_tte <- function(data,
 
   y_max <- max(c(plot_df$ucl, actual_df$actual), na.rm = TRUE)
 
+  pred_dates <- if (has_target_events) {
+    pred_dates_tbl$pred_date
+    } else {
+      NULL
+    }
+  pred_date_shapes <- if (has_target_events) {
+    lapply(pred_dates, function(d) {
+      list(
+        type = "line", xref = "x", yref = "y",
+        x0 = d, x1 = d,
+        y0 = 0, y1 = y_max,
+        line = list(color = "#2ca02c", dash = "dot")
+      )
+    })} else {
+      NULL
+    }
+  pred_date_annotations <- if (has_target_events) {
+    lapply(seq_along(pred_dates), function(i) {
+      list(
+        x = pred_dates[i], y = y_max, xref = "x", yref = "y",
+        text = paste0("IA Prediction ", i),
+        showarrow = FALSE,
+        xanchor = "left",
+        yanchor = "bottom",
+        font = list(color = "#2ca02c")
+      )
+    })} else {
+      NULL
+    }
+
   plt <- plotly::plot_ly(plot_df, x = ~date) |>
     plotly::add_ribbons(
       ymin = ~lcl,
@@ -299,7 +329,14 @@ predict_tte <- function(data,
           x0 = cutoff_date, x1 = cutoff_date,
           y0 = 0, y1 = y_max,
           line = list(color = "#9467bd", dash = "dot")
-        )
+        ),
+        list(
+          type = "line", xref = "x", yref = "y",
+          x0 = cutoff_date, x1 = cutoff_date,
+          y0 = 0, y1 = y_max,
+          line = list(color = "#9467bd", dash = "dot")
+        ),
+        pred_date_shapes
       ),
       annotations = list(
         list(
@@ -311,7 +348,8 @@ predict_tte <- function(data,
           x = cutoff_date, y = y_max, xref = "x", yref = "y",
           text = "Cutoff date", showarrow = FALSE,
           xanchor = "left", yanchor = "bottom", font = list(color = "#9467bd")
-        )
+        ),
+        pred_date_annotations
       )
     )
 
