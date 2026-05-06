@@ -324,7 +324,7 @@ predict_tte <- function(data,
           type = "line", xref = "x", yref = "y",
           x0 = cutoff_date, x1 = cutoff_date,
           y0 = 0, y1 = y_max,
-          line = list(color = "#9467bd", dash = "dot")
+          line = list(color = "#9467bd", dash = "dash")
         )
       ),
       pred_date_shapes
